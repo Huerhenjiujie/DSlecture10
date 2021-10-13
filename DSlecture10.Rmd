@@ -156,5 +156,50 @@ weather_df %>%
 ```
 
 
+## group_by and mutate
+
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    centered_tmax = tmax - mean_tmax
+  ) %>% 
+  ggplot(aes(x = date, y = centered_tmax, color = name)) +
+  geom_point()
+```
+
+what about window
+
+ranking
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  mutate(temp_rank = min_rank(desc(tmax)) 
+  ) %>% 
+  filter(temp_rank == 1)
+```
+  
+lag whole column shift one 
+could use to calculate change
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(lag_temp = lag(tmax))
+```
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(lag_temp = tmax - lag(tmax)) %>% 
+  summarise(
+    temp_change_max = max(lag_temp, na.rm = TRUE),
+    temp_CHANGE_sd = sd(lag_temp, na.rm = TRUE) 
+    )
+```
+
 
 
